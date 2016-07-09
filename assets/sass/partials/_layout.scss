@@ -1,0 +1,56 @@
+// ==========================================================================
+// Site Layout
+// ==========================================================================
+body {
+	#main-container {
+		padding-top: 60px;
+		padding-bottom: 60px;
+		&.home {
+			.thead {
+				background-color: $lightgrey;
+				font-weight: bold;
+				z-index: 100;
+				padding: 0.5em 0;
+			}
+			.tfoot {
+				background-color: $lightgrey;
+				font-weight: bold;
+				padding: 0.5em 0;
+			}
+			.price {
+				text-align: right;
+			}
+		}
+	}
+	#footer {
+		background-color: $black;
+		color: $white;
+		padding-top: 1em;
+	}
+}
+// Smaller Than (Highest Pixel Widths First)
+// 767px and below
+@include bp($max: #{$small - 1}) {
+	body {
+		#main-container {
+			&.home {
+				.thead {
+					display: none;
+				}
+				.price {
+					text-align: left;
+				}
+				.row {
+					padding-top: 0.25em;
+					padding-bottom: 0.25em;
+					border-bottom: 1px solid $lightgrey;
+				}
+			}
+			&.charts {
+				#myChart {
+					max-height: 100%;
+				}
+			}
+		}
+	}
+}

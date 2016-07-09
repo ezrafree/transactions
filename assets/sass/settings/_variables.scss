@@ -1,0 +1,42 @@
+// ==========================================================================
+// Variables
+// ==========================================================================
+
+// colors
+$white: #fff;
+$black: #000;
+$lightgrey: #e9e9e9;
+
+// fonts
+$font-sanserif: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+// ======================
+// Responsive Breakpoints
+// ======================
+
+// bootstrap breakpoints
+$large: 1200px; // large desktop
+$medium: 992px; // small desktop
+$small: 768px; // ipad portrait
+
+// ipad landscape
+$ipadlandscape: 1024px;
+
+// iphone 6 plus
+$iphone6plusportrait: 414px;
+$iphone6pluslandscape: 736px;
+
+// iphone 6
+$iphone6portrait: 375px;
+$iphone6landscape: 667px;
+
+// iphone 5, 5S, 5C
+$iphone5landscape: 568px;
+
+// iphone 3, 3G, 4, 4S
+$iphoneportrait: 320px;
+$iphonelandscape: 480px;
+
+// android
+$androidportrait: 360px;
+$androidlandscape: 640px;

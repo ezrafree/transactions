@@ -1,0 +1,27 @@
+// ==========================================================================
+// Global Element Styles
+// ==========================================================================
+.sticky {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 50px;
+	&:before,
+	&:after {
+		content: '';
+		display: table;
+	}
+}
+// ==========================================
+// Larger Than... (Lowest Pixel Widths First)
+// 992px and above
+@include bp($medium) {
+	.centered {
+		text-align: center;
+	}
+	.centered > div {
+		display: inline-block;
+		float: none;
+		text-align: left;
+		margin-right: -4px;
+	}
+}
