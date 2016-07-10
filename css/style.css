@@ -7341,18 +7341,34 @@ body #main-container {
   padding-top: 60px;
   padding-bottom: 60px;
 }
-body #main-container.home .thead {
+body #main-container .thead {
   background-color: #e9e9e9;
   font-weight: bold;
   z-index: 100;
   padding: 0.5em 0;
 }
-body #main-container.home .tfoot {
-  background-color: #e9e9e9;
-  font-weight: bold;
-  padding: 0.5em 0;
+body #main-container .thead > div {
+  margin: 0 0.25em;
 }
-body #main-container.home .price {
+body #main-container .thead .dropdown {
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+body #main-container .thead .dropdown .dropdown-toggle {
+  width: 100%;
+  display: block;
+  text-align: left;
+}
+body #main-container .thead .dropdown .dropdown-toggle .caret {
+  float: right;
+  margin-top: 0.5em;
+}
+body #main-container .thead .total {
+  font-weight: normal;
+  margin-top: 0.75em;
+  text-align: right;
+}
+body #main-container .price {
   text-align: right;
 }
 body #footer {
@@ -7362,7 +7378,7 @@ body #footer {
 }
 
 @media only screen and (max-width: 767px) {
-  body #main-container.home .thead {
+  body #main-container.home .thead .titles {
     display: none;
   }
   body #main-container.home .price {

@@ -5,6 +5,7 @@
  */
 if(
 	( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == '/' )
+	|| ( isset($_GET['page']) && $_GET['page'] == 'transactions' )
 	|| ( isset($_GET['page']) && $_GET['page'] == 'charts' )
 ) {
 	$valid = true;
@@ -119,7 +120,7 @@ foreach( $filenames AS $file ) {
 	// set an entry for rent
 	$statement[] = array(
 		'stage'       => 'POSTED',
-		'date'        => $statement_date,
+		'date'        => str_replace('-', '/', $statement_date),
 		'timestamp'   => strtotime($statement_date),
 		'posted_date' => $statement_date,
 		'card_number' => '',
@@ -161,8 +162,6 @@ foreach( $filenames AS $file ) {
 
 }
 
-// ob_start(); echo "<pre>"; var_dump( $total ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
-
 ?><!DOCTYPE html>
 <html>
 <head>
@@ -188,7 +187,7 @@ foreach( $filenames AS $file ) {
 				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li<?php echo isPage('home'); ?>><a href="/">View All <span class="sr-only">(current)</span></a></li>
+						<li<?php if( isPage('home') || isPage('transactions') ) echo ' class="active"'; ?>><a href="/">View All <span class="sr-only">(current)</span></a></li>
 						<li<?php echo isPage('charts'); ?>><a href="/charts/">Charts</a></li>
 					</ul>
 				</div>
@@ -210,26 +209,96 @@ foreach( $filenames AS $file ) {
 			}
 		?>
 
-		<?php if( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == '/' ) { ?>
-			<div id="main-container" class="home container">
-				<div class="row thead sticky">
-					<div class="col-sm-3 col-md-3">Date</div>
-					<div class="col-sm-3 col-md-3">Description</div>
-					<div class="col-sm-3 col-md-3">Category</div>
-					<div class="col-sm-3 col-md-3 price">Amount</div>
-				</div>
-				<?php foreach($transactions AS $statement) { ?>
-					<?php foreach( $statement AS $transaction ) { ?>
-						<div class="row">
-							<div class="col-sm-3 col-md-3"><?= $transaction['date'] ?></div>
-							<div class="col-sm-3 col-md-3"><?= $transaction['description'] ?></div>
-							<div class="col-sm-3 col-md-3"><?= $transaction['category'] ?></div>
-							<div class="col-sm-3 col-md-3 price">$<?= number_format($transaction['debit'], 2) ?></div>
+		<?php if(
+			( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == '/' )
+			|| ( isset($_GET['page']) && $_GET['page'] == 'transactions' )
+		) { ?>
+			<div id="main-container" class="home container-fluid">
+				<div class="thead sticky container">
+					<div class="row filters">
+						<div class="col-md-3 col-sm-6 col-xs-12">
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" id="statement_filter" data-toggle="dropdown" aria-haspopup="true">
+									<span class="text" data-default="View All">
+										<?php
+											if( isset($_GET['page']) && $_GET['page'] == 'transactions' ) {
+												echo str_replace('-', '/', $_GET['id']);
+											} else {
+												echo 'View All';
+											}
+										?>
+									</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="statement_filter">
+									<li<?php $hasId = isset($_GET['id']); if( !$hasId ) echo ' class="active"'; ?>><a href="#transactions">View All</a></li>
+									<?php
+										foreach( $transactions AS $statement_date => $transactions_array ) {
+											?>
+											<li<?php if( isset($_GET['id']) && $_GET['id'] == $statement_date ) echo ' class="active"'; ?>>
+												<a href="#<?= $statement_date ?>"><?= str_replace('-', '/', $statement_date) ?></a>
+											</li>
+											<?php
+										}
+									?>
+								</ul>
+								<input type="hidden" name="statement_filter" value="">
+							</div>
 						</div>
-					<?php } ?>
-				<?php } ?>
-				<div class="row tfoot">
-					<div class="col-sm-12 col-md-12 price"><strong>Total $<?= number_format($total, 2) ?></strong></div>
+						<div class="col-md-6 hidden-sm hidden-xs"></div>
+						<div class="col-md-3 col-sm-6 col-xs-12">
+							<div class="total">
+								<?php
+									if( isset($_GET['page']) && $_GET['page'] == 'transactions' ) {
+										$statement_date = $_GET['id'];
+										$subtotal = 0;
+										foreach($transactions[$statement_date] AS $transaction) {
+											$subtotal += $transaction['debit'];
+										}
+										echo 'Statement Total <strong>$' . number_format($subtotal, 2) . '</strong>';
+									} else {
+										echo 'Year-To-Date Total <strong>$' . number_format($total, 2) . '</strong>';
+									}
+								?>
+							</div>
+						</div>
+					</div>
+					<div class="row titles">
+						<div class="col-sm-3 col-md-3">Date</div>
+						<div class="col-sm-3 col-md-3">Description</div>
+						<div class="col-sm-3 col-md-3">Category</div>
+						<div class="col-sm-3 col-md-3 price">Amount</div>
+					</div>
+				</div>
+				<div class="container">
+					<?php
+						if( isset($_GET['page']) && $_GET['page'] == 'transactions' ) {
+							$statement_date = $_GET['id'];
+							foreach($transactions[$statement_date] AS $transaction) {
+								?>
+								<div class="row">
+									<div class="col-sm-3 col-md-3"><?= $transaction['date'] ?></div>
+									<div class="col-sm-3 col-md-3"><?= $transaction['description'] ?></div>
+									<div class="col-sm-3 col-md-3"><?= $transaction['category'] ?></div>
+									<div class="col-sm-3 col-md-3 price">$<?= number_format($transaction['debit'], 2) ?></div>
+								</div>
+								<?php
+							}
+						} else {
+							foreach($transactions AS $statement) {
+								foreach( $statement AS $transaction ) {
+									?>
+									<div class="row">
+										<div class="col-sm-3 col-md-3"><?= $transaction['date'] ?></div>
+										<div class="col-sm-3 col-md-3"><?= $transaction['description'] ?></div>
+										<div class="col-sm-3 col-md-3"><?= $transaction['category'] ?></div>
+										<div class="col-sm-3 col-md-3 price">$<?= number_format($transaction['debit'], 2) ?></div>
+									</div>
+									<?php
+								}
+							}
+						}
+					?>
 				</div>
 			</div>
 		<?php } else if( isset($_GET['page']) && $_GET['page'] == 'charts' ) { ?>
@@ -243,10 +312,41 @@ foreach( $filenames AS $file ) {
 				$labels = rtrim($labels, ",");
 				$debits = rtrim($debits, ",");
 			?>
-			<div id="main-container" class="charts container">
-				<div class="row centered">
-					<div class="col-md-12 col-lg-10">
-						<canvas id="myChart" width="400" height="400"></canvas>
+			<div id="main-container" class="charts container-fluid">
+				<div class="thead sticky container">
+					<div class="row filters">
+						<div class="col-md-3 col-sm-6 col-xs-12">
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" id="statement_filter" data-toggle="dropdown" aria-haspopup="true">
+									<span class="text" data-default="View All">View All</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="statement_filter">
+									<li<?php $hasId = isset($_GET['id']); if( !$hasId ) echo ' class="active"'; ?>><a href="#charts">View All</a></li>
+									<?php
+										foreach( $transactions AS $statement_date => $transactions_array ) {
+											?>
+											<li<?php if( isset($_GET['id']) && $_GET['id'] == $statement_date ) echo ' class="active"'; ?>>
+												<a href="#<?= $statement_date ?>"><?= str_replace('-', '/', $statement_date) ?></a>
+											</li>
+											<?php
+										}
+									?>
+								</ul>
+								<input type="hidden" name="statement_filter" value="">
+							</div>
+						</div>
+						<div class="col-md-6 hidden-sm hidden-xs"></div>
+						<div class="col-md-3 col-sm-6 col-xs-12">
+							<div class="total">Total $<?= number_format($total, 2) ?></div>
+						</div>
+					</div>
+				</div>
+				<div class="container">
+					<div class="row centered">
+						<div class="col-md-12 col-lg-10">
+							<canvas id="myChart" width="400" height="400"></canvas>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -273,6 +373,18 @@ foreach( $filenames AS $file ) {
 			var myChart = new Chart(ctx, {
 				type: 'horizontalBar',
 				responsive: true,
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					},
+					legend: {
+						display: false
+					}
+				},
 				data: {
 					labels: [<?php echo $labels; ?>],
 					datasets: [{
@@ -355,18 +467,6 @@ foreach( $filenames AS $file ) {
 						],
 						borderWidth: 1
 					}]
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: true
-							}
-						}]
-					},
-					legend: {
-						display: false
-					}
 				}
 			});
 		</script>

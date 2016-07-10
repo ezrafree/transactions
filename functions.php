@@ -8,7 +8,7 @@
 function getFiles( $dirname ) {
     $dir = new DirectoryIterator( $dirname );
     foreach ($dir as $fileinfo) {
-        if (!$fileinfo->isDot()) {
+        if ( !$fileinfo->isDot() && $fileinfo->getFilename() != '.gitkeep' ) {
             $filenames[] = $fileinfo->getFilename();
         }
     }
