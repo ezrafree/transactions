@@ -11,6 +11,8 @@ Currently Transactions only supports CSV exports of statements from Capital One.
 
 ### Development
 
-This project uses Grunt to build the JavaScript and stylesheet files. You'll need node.js and npm installed, and to run grunt just change into the directory and run:
+This project uses GruntJS to build the JavaScript and stylesheet files. You'll need node.js and npm installed.
+
+To run grunt just change into the directory and run:
 
     grunt watch
