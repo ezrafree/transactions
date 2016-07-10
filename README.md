@@ -8,3 +8,9 @@ Currently Transactions only supports CSV exports of statements from Capital One.
 
 - Instead of just a field for rent, set it up so that an array can be used to add in any monthly transactions
 - Allow filtering by statement of the Transactions List and Transactions Categories views
+
+### Development
+
+This project uses Grunt to build the JavaScript and stylesheet files. You'll need node.js and npm installed, and to run grunt just change into the directory and run:
+
+    grunt watch
