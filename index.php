@@ -113,6 +113,16 @@ foreach( $filenames AS $file ) {
 			}
 		}
 
+		// set up per-statement chart data
+		if( isset($category) && isset($debit) ) {
+			if( isset($statementsChartData[$statement_date][$category]) ) {
+				$current_total = $statementsChartData[$statement_date][$category];
+				$statementsChartData[$statement_date][$category] = ($current_total + $debit);
+			} else {
+				$statementsChartData[$statement_date][$category] = $debit;
+			}
+		}
+
 		$i++;
 
 	}
@@ -129,6 +139,7 @@ foreach( $filenames AS $file ) {
 		'debit'       => $rent,
 		'credit'      => 0
 	);
+
 	// add rent to year-to-date chart data
 	if( array_key_exists('Rent', $ytdChartData) ) {
 		$current_total = $ytdChartData['Rent'];
@@ -137,15 +148,32 @@ foreach( $filenames AS $file ) {
 		$ytdChartData['Rent'] = $rent;
 	}
 
-	// sort the chart data array by the X field
+	// add rent to per-statement chart data
+	$statementsChartData[$statement_date]['Rent'] = $rent;
+
+	// sort the year-to-date chart data array
 	arsort($ytdChartData);
 
-	// remove categories with no results and tally the grand total
+	// sort the per-statement chart data array
+	foreach($statementsChartData AS $this_statement_date => $this_statement) {
+		arsort($statementsChartData[$this_statement_date]);
+	}
+
+	// remove categories with no results from year-to-date chart data, and tally the grand total
 	$total = 0;
 	foreach($ytdChartData AS $key => $value) {
 		$total += $value;
 		if($value == 0) {
 			unset($ytdChartData[$key]);
+		}
+	}
+
+	// remove categories with no results from per-statement chart data
+	foreach($statementsChartData AS $this_statement_date => $this_statement) {
+		foreach($this_statement AS $key => $value) {
+			if($value == 0) {
+				unset($statementsChartData[$statement_date][$key]);
+			}
 		}
 	}
 
@@ -161,6 +189,8 @@ foreach( $filenames AS $file ) {
 	$transactions[$statement_date] = $statement;
 
 }
+
+// ob_start(); echo "<pre>"; var_dump( $statementsChartData ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
 
 ?><!DOCTYPE html>
 <html>
@@ -212,7 +242,10 @@ foreach( $filenames AS $file ) {
 		<?php if(
 			( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == '/' )
 			|| ( isset($_GET['page']) && $_GET['page'] == 'transactions' )
-		) { ?>
+		) {
+			// ==================================================
+			// TRANSACTIONS PAGE
+			?>
 			<div id="main-container" class="home container-fluid">
 				<div class="thead sticky container">
 					<div class="row filters">
@@ -301,23 +334,25 @@ foreach( $filenames AS $file ) {
 					?>
 				</div>
 			</div>
-		<?php } else if( isset($_GET['page']) && $_GET['page'] == 'charts' ) { ?>
 			<?php
-				$labels = '';
-				$debits = '';
-				if( isset($_GET['page']) && $_GET['page'] == 'charts' ) {
-					foreach($ytdChartData as $label => $value) {
-						$labels .= '"' . $label . '",';
-						$debits .= $value . ',';
-					}
-				} else {
-					foreach($ytdChartData as $label => $value) {
-						$labels .= '"' . $label . '",';
-						$debits .= $value . ',';
-					}
+		} else if( isset($_GET['page']) && $_GET['page'] == 'charts' ) {
+			// ==================================================
+			// CHARTS PAGE
+			$labels = '';
+			$debits = '';
+			if( isset($_GET['page']) && $_GET['page'] == 'charts' && isset($_GET['id']) && $_GET['id'] ) {
+				foreach($statementsChartData[$_GET['id']] as $label => $value) {
+					$labels .= '"' . $label . '",';
+					$debits .= $value . ',';
 				}
-				$labels = rtrim($labels, ",");
-				$debits = rtrim($debits, ",");
+			} else {
+				foreach($ytdChartData as $label => $value) {
+					$labels .= '"' . $label . '",';
+					$debits .= $value . ',';
+				}
+			}
+			$labels = rtrim($labels, ",");
+			$debits = rtrim($debits, ",");
 			?>
 			<div id="main-container" class="charts container-fluid">
 				<div class="thead sticky container">
@@ -325,7 +360,15 @@ foreach( $filenames AS $file ) {
 						<div class="col-md-3 col-sm-6 col-xs-12">
 							<div class="dropdown">
 								<button class="btn btn-default dropdown-toggle" type="button" id="statement_filter" data-toggle="dropdown" aria-haspopup="true">
-									<span class="text" data-default="View All">View All</span>
+									<span class="text" data-default="View All">
+										<?php
+											if( isset($_GET['page']) && $_GET['page'] == 'charts' && isset($_GET['id']) && $_GET['id'] ) {
+												echo str_replace('-', '/', $_GET['id']);
+											} else {
+												echo 'View All';
+											}
+										?>
+									</span>
 									<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" aria-labelledby="statement_filter">
@@ -345,7 +388,20 @@ foreach( $filenames AS $file ) {
 						</div>
 						<div class="col-md-6 hidden-sm hidden-xs"></div>
 						<div class="col-md-3 col-sm-6 col-xs-12">
-							<div class="total">Total $<?= number_format($total, 2) ?></div>
+							<div class="total">
+								<?php
+									if( isset($_GET['page']) && $_GET['page'] == 'charts' && isset($_GET['id']) && $_GET['id'] ) {
+										$statement_date = $_GET['id'];
+										$subtotal = 0;
+										foreach($transactions[$statement_date] AS $transaction) {
+											$subtotal += $transaction['debit'];
+										}
+										echo 'Statement Total <strong>$' . number_format($subtotal, 2) . '</strong>';
+									} else {
+										echo 'Year-To-Date Total <strong>$' . number_format($total, 2) . '</strong>';
+									}
+								?>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -357,7 +413,10 @@ foreach( $filenames AS $file ) {
 					</div>
 				</div>
 			</div>
-		<?php } ?>
+			<?php
+			}
+			// ==================================================
+		?>
 
 	</div>
 
