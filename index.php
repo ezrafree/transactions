@@ -305,9 +305,16 @@ foreach( $filenames AS $file ) {
 			<?php
 				$labels = '';
 				$debits = '';
-				foreach($ytdChartData as $label => $value) {
-					$labels .= '"' . $label . '",';
-					$debits .= $value . ',';
+				if( isset($_GET['page']) && $_GET['page'] == 'charts' ) {
+					foreach($ytdChartData as $label => $value) {
+						$labels .= '"' . $label . '",';
+						$debits .= $value . ',';
+					}
+				} else {
+					foreach($ytdChartData as $label => $value) {
+						$labels .= '"' . $label . '",';
+						$debits .= $value . ',';
+					}
 				}
 				$labels = rtrim($labels, ",");
 				$debits = rtrim($debits, ",");

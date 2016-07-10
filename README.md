@@ -6,8 +6,8 @@ Currently Transactions only supports CSV exports of statements from Capital One.
 
 ### To Do
 
+- <s>Allow filtering by statement of the Transactions List and Transactions Categories views</s>
 - Instead of just a field for rent, set it up so that an array can be used to add in any monthly transactions
-- Allow filtering by statement of the Transactions List and Transactions Categories views
 
 ### Development
 
