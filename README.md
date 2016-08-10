@@ -2,12 +2,15 @@
 
 Transactions is a web application to visualize spending based on credit card statement transactions.
 
-Currently Transactions only supports CSV exports of statements from Capital One. You must rename each downloaded CSV file to `Transactions-Statement-MM-DD-YYY.csv` (using the statement date) and copy it to the `downloads` directory.
+### Supported Formats
 
-### To Do
+***Please Note:*** Currently this app only supports CSV exports of statements from Capital One.
 
-- <s>Allow filtering by statement of the Transactions List and Transactions Categories views</s>
-- Instead of just a field for rent, set it up so that an array can be used to add in any monthly transactions
+In the following examples, the date you should use to name your files is shown as `MM-YYYY`. For example, if the month and year were June of 1969, you would use `06-1969`.
+
+***Capital One***
+
+For Capital One credit card statements, rename each downloaded CSV file to `capitalone-MM-YYYY.csv` and copy it to the `downloads` directory.
 
 ### Development
 
