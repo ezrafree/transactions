@@ -19,3 +19,7 @@ This project uses GruntJS to build the JavaScript and stylesheet files. You'll n
 To run grunt just change into the directory and run:
 
     grunt watch
+
+### How to Contribute
+
+Feel free to submit a pull request or get in touch with me @ezrafree if you'd like to discuss any ideas you may have for the app.

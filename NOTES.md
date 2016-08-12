@@ -16,6 +16,6 @@
     - Show spending per category
 - Trends
     - Show a "timeline" linegraph depicting spending totals from each month
-    - (either for all categories, or a particular category)
+    - A dropdown will be set to All Categories by default, or a particular category may be selected
 - Averages
     - Show the average of each category's totals

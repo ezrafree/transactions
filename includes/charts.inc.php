@@ -51,7 +51,7 @@ $debits = rtrim($debits, ",");
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="total">
                     <?php
-                        // charts view
+                        // statement
                         if( isset($_GET['page']) && $_GET['page'] == 'charts' && isset($_GET['id']) && $_GET['id'] ) {
                             // statement total
                             $statement_date = $_GET['id'];
@@ -70,7 +70,7 @@ $debits = rtrim($debits, ",");
                                 $total_savings = ($monthly_income - $subtotal);
                                 echo '<br><span style="color:#080;">Amount Saved</span> <strong>$' . number_format($total_savings, 2) . '</strong>';
                             }
-                        // transactions view
+                        // year-to-date
                         } else {
                             // year-to-date statement total
                             echo 'Year-To-Date Total <strong>$' . number_format($total, 2) . '</strong><br>';
