@@ -89,13 +89,13 @@ foreach( $filenames AS $file ) {
 				$statementsChartData[$statement_date][$category] = $debit;
 			}
 			// set up monthly totals chart data
-			if( isset($statementsChartData[$statement_date][$category]) ) {
-				// if the category already exists, add to it
-				$current_total = $statementsChartData[$statement_date][$category];
-				$statementsChartData[$statement_date][$category] = ($current_total + $debit);
+			if( isset($totalsChartData[$statement_date]) ) {
+				// if the statement date already exists, add to it
+				$current_total = $totalsChartData[$statement_date];
+				$totalsChartData[$statement_date] = ($current_total + $debit);
 			} else {
-				// if the category does not already exist, create it
-				$statementsChartData[$statement_date][$category] = $debit;
+				// if the statement date does not already exist, create it
+				$totalsChartData[$statement_date] = $debit;
 			}
 		}
 
@@ -166,4 +166,4 @@ foreach( $filenames AS $file ) {
 
 }
 
-ob_start(); echo "<pre>"; var_dump( $statementsChartData ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
+// ob_start(); echo "<pre>"; var_dump( $totalsChartData ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;

@@ -98,7 +98,7 @@ $debits = rtrim($debits, ",");
 	<div class="container">
 		<div class="row centered">
 			<div class="col-md-12 col-lg-10">
-				<canvas id="myChart" width="400" height="400"></canvas>
+				<canvas id="trendsChart" width="400" height="400"></canvas>
 			</div>
 		</div>
 	</div>
