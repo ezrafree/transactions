@@ -66,6 +66,7 @@ require_once('procedures.php');
 					<ul class="nav navbar-nav">
 						<li<?php if( isPage('home') || isPage('transactions') ) echo ' class="active"'; ?>><a href="/">View All <span class="sr-only">(current)</span></a></li>
 						<li<?php echo isPage('charts'); ?>><a href="/charts/">Charts</a></li>
+						<li<?php echo isPage('trends'); ?>><a href="/trends/">Trends</a></li>
 					</ul>
 				</div>
 			</div>

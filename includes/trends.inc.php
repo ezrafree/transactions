@@ -7,7 +7,11 @@ if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $
 		$debits .= $value . ',';
 	}
 } else {
-	foreach($ytdChartData as $label => $value) {
+	foreach($totalsChartData as $statement_date => $value) {
+		$month = substr($statement_date, 0, 2);
+		$year = substr($statement_date, 3, 4);
+		$date = $year . "-" . $month . "-01";
+		$label = date('F', strtotime($date) );
 		$labels .= '"' . $label . '",';
 		$debits .= $value . ',';
 	}
@@ -26,14 +30,14 @@ $debits = rtrim($debits, ",");
 								if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $_GET['id'] ) {
 									echo str_replace('-', '/', $_GET['id']);
 								} else {
-									echo 'View All';
+									echo 'All Categories';
 								}
 							?>
 						</span>
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="statement_filter">
-						<li<?php $hasId = isset($_GET['id']); if( !$hasId ) echo ' class="active"'; ?>><a href="#trends">View All</a></li>
+						<li<?php $hasId = isset($_GET['id']); if( !$hasId ) echo ' class="active"'; ?>><a href="#trends">All Categories</a></li>
 						<?php
 							foreach( $transactions AS $statement_date => $transactions_array ) {
 								?>
