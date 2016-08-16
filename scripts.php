@@ -107,6 +107,8 @@
 	<script type="text/javascript">
 		var canvas = document.getElementById("trendsChart");
 		var ctx = canvas.getContext("2d");
+			ctx.canvas.width = window.innerWidth;
+			ctx.canvas.height = window.innerHeight;
 
 		var horizonalLinePlugin = {
 			afterDraw: function(chartInstance) {
@@ -169,11 +171,11 @@
 				pointBorderColor: "rgba(75,192,192,1)",
 				pointBackgroundColor: "#fff",
 				pointBorderWidth: 1,
-				pointHoverRadius: 4,
+				pointHoverRadius: 5,
 				pointHoverBackgroundColor: "rgba(75,192,192,1)",
 				pointHoverBorderColor: "rgba(220,220,220,1)",
 				pointHoverBorderWidth: 2,
-				pointRadius: 4,
+				pointRadius: 5,
 				pointHitRadius: 0,
 				data: [<?php echo $debits; ?>],
 			}]
@@ -186,12 +188,23 @@
 				legend: {
 					display: false
 				},
+				// tooltips: {
+				// 	enabled: true,
+				// 	mode: 'single'
+				// },
+				tooltipTemplate: "<%= '$' + value %>",
+				multiTooltipTemplate: "<%= '$' + value %>",
 				"horizontalLine": [{
-					"y": 3000,
+					"y": 3400,
 					"style": "rgba(255, 0, 0, .4)",
 					// "text": "max",
-				}]
-			}
+				},
+				{
+					"y": 3000,
+					"style": "rgba(0, 200, 0, .4)",
+					// "text": "ideal",
+				}],
+			},
 		});
 	</script>
 <?php } ?>
