@@ -20,7 +20,7 @@ $(document).ready(function() {
 			pathname = 'transactions';
 		} else {
 			var pathparts = window.location.pathname.split('/');
-			pathname = pathparts[1];
+			pathname = pathparts[pathparts.length-1];
 		}
 		if( hashValue == 'transactions' ) window.location.href = window.location.protocol + '//' + window.location.host + webroot + pathname;
 		else if( hashValue == 'charts' ) window.location.href = window.location.protocol + '//' + window.location.host + webroot + pathname + '/';
