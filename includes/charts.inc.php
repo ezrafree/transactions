@@ -77,8 +77,8 @@ $debits = rtrim($debits, ",");
 							// year-to-date income
 							$current_month = date('n');
 							$ytd_income = ($current_month * $monthly_income);
-							foreach( $one_time_incomes AS $income ) {
-								$ytd_income += $income;
+							foreach( $one_time_incomes AS $date => $income ) {
+								$ytd_income += $income['amount'];
 							}
 							echo 'Year-To-Date Income <strong>$' . number_format($ytd_income, 2) . '</strong>';
 							// calculate debt or savings

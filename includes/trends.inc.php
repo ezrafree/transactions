@@ -1,12 +1,36 @@
 <?php
+// prepare an array of all category names
+$categories = array();
+foreach( $statementsChartData AS $monthYear => $data ) {
+	foreach( $data AS $category_name => $amount ) {
+		if( !in_array( $category_name, $categories ) && $category_name != 'Rent' ) {
+			$category_slug = strtolower( str_replace( ' ', '-', str_replace( '/', '-', $category_name ) ) );
+			$categories[$category_slug] = $category_name;
+		}
+	}
+}
+asort($categories);
+
+// prepare the monthly trends
 $labels = '';
 $debits = '';
-if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $_GET['id'] ) {
-	foreach($statementsChartData[$_GET['id']] as $label => $value) {
-		$labels .= '"' . $label . '",';
-		$debits .= $value . ',';
+if( isset($_GET['id']) && $_GET['id'] ) {
+	// prepare the monthly trends for a specific category
+	$category_slug = $_GET['id'];
+	foreach( $statementsChartData AS $statement_date => $data ) {
+		foreach( $data AS $category_name => $value ) {
+			if( $category_name == $categories[$category_slug] ) {
+				$month = substr($statement_date, 0, 2);
+				$year = substr($statement_date, 3, 4);
+				$date = $year . "-" . $month . "-01";
+				$label = date('F', strtotime($date) );
+				$labels .= '"' . $label . '",';
+				$debits .= $value . ',';
+			}
+		}
 	}
 } else {
+	// prepare the monthly trends for all categories
 	foreach($totalsChartData as $statement_date => $value) {
 		$month = substr($statement_date, 0, 2);
 		$year = substr($statement_date, 3, 4);
@@ -18,6 +42,7 @@ if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $
 }
 $labels = rtrim($labels, ",");
 $debits = rtrim($debits, ",");
+
 ?>
 <div id="main-container" class="trends container-fluid">
 	<div class="thead sticky container">
@@ -28,7 +53,8 @@ $debits = rtrim($debits, ",");
 						<span class="text" data-default="View All">
 							<?php
 								if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $_GET['id'] ) {
-									echo str_replace('-', '/', $_GET['id']);
+									$get_category_slug = $_GET['id'];
+									echo $categories[$get_category_slug];
 								} else {
 									echo 'All Categories';
 								}
@@ -39,10 +65,10 @@ $debits = rtrim($debits, ",");
 					<ul class="dropdown-menu" aria-labelledby="statement_filter">
 						<li<?php $hasId = isset($_GET['id']); if( !$hasId ) echo ' class="active"'; ?>><a href="#trends">All Categories</a></li>
 						<?php
-							foreach( $transactions AS $statement_date => $transactions_array ) {
+							foreach( $categories AS $category_slug => $category_name ) {
 								?>
-								<li<?php if( isset($_GET['id']) && $_GET['id'] == $statement_date ) echo ' class="active"'; ?>>
-									<a href="#<?= $statement_date ?>"><?= str_replace('-', '/', $statement_date) ?></a>
+								<li<?php if( isset($_GET['id']) && $_GET['id'] == $category_slug ) echo ' class="active"'; ?>>
+									<a href="#<?= $category_slug ?>"><?= $categories[$category_slug] ?></a>
 								</li>
 								<?php
 							}
@@ -57,23 +83,23 @@ $debits = rtrim($debits, ",");
 					<?php
 						// statement
 						if( isset($_GET['page']) && $_GET['page'] == 'trends' && isset($_GET['id']) && $_GET['id'] ) {
-							// statement total
-							$statement_date = $_GET['id'];
-							$subtotal = 0;
-							foreach($transactions[$statement_date] AS $transaction) {
-								$subtotal += $transaction['debit'];
-							}
-							echo 'Statement Total <strong>$' . number_format($subtotal, 2) . '</strong><br>';
-							// print income amount
-							echo 'Income <strong>$' . number_format($monthly_income, 2) . '</strong>';
-							// calculate debt or savings
-							if( $subtotal > $monthly_income ) {
-								$total_debt = ($subtotal - $monthly_income);
-								echo '<br><span style="color:#f00;">Debt Incurred</span> <strong>$' . number_format($total_debt, 2) . '</strong>';
-							} else {
-								$total_savings = ($monthly_income - $subtotal);
-								echo '<br><span style="color:#080;">Amount Saved</span> <strong>$' . number_format($total_savings, 2) . '</strong>';
-							}
+							// // statement total
+							// $statement_date = $_GET['id'];
+							// $subtotal = 0;
+							// foreach($transactions[$statement_date] AS $transaction) {
+							// 	$subtotal += $transaction['debit'];
+							// }
+							// echo 'Statement Total <strong>$' . number_format($subtotal, 2) . '</strong><br>';
+							// // print income amount
+							// echo 'Income <strong>$' . number_format($monthly_income, 2) . '</strong>';
+							// // calculate debt or savings
+							// if( $subtotal > $monthly_income ) {
+							// 	$total_debt = ($subtotal - $monthly_income);
+							// 	echo '<br><span style="color:#f00;">Debt Incurred</span> <strong>$' . number_format($total_debt, 2) . '</strong>';
+							// } else {
+							// 	$total_savings = ($monthly_income - $subtotal);
+							// 	echo '<br><span style="color:#080;">Amount Saved</span> <strong>$' . number_format($total_savings, 2) . '</strong>';
+							// }
 						// year-to-date
 						} else {
 							// year-to-date statement total
@@ -81,8 +107,8 @@ $debits = rtrim($debits, ",");
 							// year-to-date income
 							$current_month = date('n');
 							$ytd_income = ($current_month * $monthly_income);
-							foreach( $one_time_incomes AS $income ) {
-								$ytd_income += $income;
+							foreach( $one_time_incomes AS $date => $income ) {
+								$ytd_income += $income['amount'];
 							}
 							echo 'Year-To-Date Income <strong>$' . number_format($ytd_income, 2) . '</strong>';
 							// calculate debt or savings

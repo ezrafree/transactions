@@ -18,6 +18,10 @@ $filenames = getFiles( $dirname );
 // process each file
 foreach( $filenames AS $file ) {
 
+	/**
+	 * Parse Statement Transactions
+	 */
+
 	// parse statement date from filename
 	$statement_date = parseStatementDate($file);
 
@@ -103,6 +107,10 @@ foreach( $filenames AS $file ) {
 
 	}
 
+	/**
+	 * Add Rent
+	 */
+
 	// set an entry for rent
 	$statement[] = array(
 		'stage'       => 'POSTED',
@@ -126,6 +134,10 @@ foreach( $filenames AS $file ) {
 
 	// add rent to per-statement chart data
 	$statementsChartData[$statement_date]['Rent'] = $rent;
+
+	/**
+	 * Sorting and Clean-up
+	 */
 
 	// sort the year-to-date chart data array
 	arsort($ytdChartData);
@@ -167,3 +179,4 @@ foreach( $filenames AS $file ) {
 }
 
 // ob_start(); echo "<pre>"; var_dump( $totalsChartData ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
+// ob_start(); echo "<pre>"; var_dump( $statementsChartData ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;

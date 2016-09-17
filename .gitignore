@@ -1,5 +1,8 @@
 # gitignore
 
+# Apache
+.htaccess
+
 # statement csv files
 *.csv
 

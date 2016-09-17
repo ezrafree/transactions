@@ -21,6 +21,7 @@ $(document).ready(function() {
 		}
 		if( hashValue == 'transactions' ) window.location.href = window.location.protocol + '//' + window.location.host + '/' + pathname;
 		else if( hashValue == 'charts' ) window.location.href = window.location.protocol + '//' + window.location.host + '/' + pathname + '/';
+		else if( hashValue == 'trends' ) window.location.href = window.location.protocol + '//' + window.location.host + '/' + pathname + '/';
 		else window.location.href = window.location.protocol + '//' + window.location.host + '/' + pathname + '/' + hashValue + '/';
 
 		// prevent event bubbling

@@ -3,8 +3,10 @@
 /**
  * HTTP Headers
  */
+// ob_start(); echo "<pre>"; var_dump( $_SERVER['REQUEST_URI'] ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
+$webroot = '/';
 if(
-	( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == '/' )
+	( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == $webroot )
 	|| ( isset($_GET['page']) && $_GET['page'] == 'transactions' )
 	|| ( isset($_GET['page']) && $_GET['page'] == 'charts' )
 	|| ( isset($_GET['page']) && $_GET['page'] == 'trends' )
@@ -45,7 +47,7 @@ require_once('procedures.php');
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Transactions</title>
-	<link rel="stylesheet" href="/css/style.min.css">
+	<link rel="stylesheet" href="<?= $webroot; ?>css/style.min.css">
 </head>
 <body>
 
@@ -116,7 +118,7 @@ require_once('procedures.php');
 
 	</div>
 
-	<script src="/js/script.min.js"></script>
+	<script src="<?= $webroot; ?>js/script.min.js"></script>
 	<?php require_once('scripts.php'); ?>
 
 </body>
