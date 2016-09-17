@@ -60,13 +60,13 @@ require_once('procedures.php');
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="/">Transactions</a>
+					<a class="navbar-brand" href="<?= $webroot; ?>">Transactions</a>
 				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li<?php if( isPage('home') || isPage('transactions') ) echo ' class="active"'; ?>><a href="/">View All <span class="sr-only">(current)</span></a></li>
-						<li<?php echo isPage('charts'); ?>><a href="/charts/">Charts</a></li>
-						<li<?php echo isPage('trends'); ?>><a href="/trends/">Trends</a></li>
+						<li<?php if( isPage('home') || isPage('transactions') ) echo ' class="active"'; ?>><a href="<?= $webroot; ?>">View All <span class="sr-only">(current)</span></a></li>
+						<li<?php echo isPage('charts'); ?>><a href="<?= $webroot; ?>charts/">Charts</a></li>
+						<li<?php echo isPage('trends'); ?>><a href="<?= $webroot; ?>trends/">Trends</a></li>
 					</ul>
 				</div>
 			</div>
