@@ -56,6 +56,7 @@ $(document).ready(function() {
 		} else {
 			var pathparts = window.location.pathname.split('/');
 			pathname = pathparts[pathparts.length-2];
+console.log( 'pathname', pathname );
 		}
 		if( hashValue == 'transactions' ) window.location.href = window.location.protocol + '//' + window.location.host + webroot + pathname;
 		else if( hashValue == 'charts' ) window.location.href = window.location.protocol + '//' + window.location.host + webroot + pathname + '/';
