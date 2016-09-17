@@ -47,7 +47,7 @@ require_once('procedures.php');
 	<title>Transactions</title>
 	<link rel="stylesheet" href="<?= $webroot; ?>css/style.min.css">
 </head>
-<body>
+<body data-webroot="<?= $webroot ?>">
 
 	<div id="content">
 
