@@ -1,5 +1,8 @@
 <?php
 
+// set the webroot path
+$webroot = '/';
+
 // set the directory path to the csv files
 $csv_directory = "/downloads/";
 

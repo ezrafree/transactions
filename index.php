@@ -3,8 +3,6 @@
 /**
  * HTTP Headers
  */
-// ob_start(); echo "<pre>"; var_dump( $_SERVER['REQUEST_URI'] ); echo "</pre>"; $dump = ob_get_clean(); echo $dump;
-$webroot = '/';
 if(
 	( isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] == $webroot )
 	|| ( isset($_GET['page']) && $_GET['page'] == 'transactions' )
